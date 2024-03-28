@@ -69,6 +69,49 @@ namespace settings
         }
     }
 
+    namespace antiaim
+    {
+        namespace globals
+        {
+            inline bool enable = false;
+            inline hotkey_t hotkey;
+            inline int yaw = 0;
+            inline int pitch = 0;
+            inline bool invert_yaw = false;
+            inline bool fake_duck = false;
+        }
+
+        namespace fakelags
+        {
+            inline bool enable = false;
+            inline int count = 1;
+            inline int method = 0;
+        }
+
+        namespace visuals
+        {
+
+        }
+    }
+
+    namespace miscellaneous
+    {
+        namespace globals
+        {
+            namespace third_person
+            {
+                inline bool enable = false;
+                inline hotkey_t hotkey;
+                inline int distance = 100;
+            }
+        }
+
+        namespace movement
+        {
+
+        }
+    }
+
     namespace visuals
     {
         namespace players

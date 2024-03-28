@@ -66,27 +66,35 @@ void menu::render()
     {
         ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
 
-        BeginChild("AntiAim", child_size);
+        BeginChild("Globals", child_size);
         {
+            Checkbox("Enable", &settings::antiaim::globals::enable); custom::hotkey("AntiAim Hotkey", &settings::antiaim::globals::hotkey);
+            Checkbox("Fake duck", &settings::antiaim::globals::fake_duck);
+            Checkbox("Invert yaw", &settings::antiaim::globals::invert_yaw);
+            Combo("Yaw", &settings::antiaim::globals::yaw, "LBY\0" "Spin\0");
+            Combo("Pitch", &settings::antiaim::globals::pitch, "Down\0" "Up\0");
 
+            EndChild();
         }
-        EndChild();
 
         SameLine();
 
         BeginChild("FakeLag's", child_size);
         {
+            Checkbox("Enable", &settings::antiaim::fakelags::enable);
+            SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); /*sv_maxusrcmdprocessticks = 24*/
+            Combo("Method", &settings::antiaim::fakelags::method, "On Ground\0" "In Air\0" "On Move\0" "On Stand\0" "Always\0");
 
+            EndChild();
         }
-        EndChild();
 
         SameLine();
 
         BeginChild("Visuals", child_size);
         {
 
+            EndChild();
         }
-        EndChild();
 
         EndTabItem();
     }
@@ -129,17 +137,19 @@ void menu::render()
 
         BeginChild("Globals", child_size);
         {
+            Checkbox("ThirdPerson", &settings::miscellaneous::globals::third_person::enable); custom::hotkey("Third person Hotkey", &settings::miscellaneous::globals::third_person::hotkey);
+            SliderInt("ThirdPerson Distance", &settings::miscellaneous::globals::third_person::distance, 10, 200);
 
+            EndChild();
         }
-        EndChild();
 
         SameLine();
 
         BeginChild("Movement", child_size);
         {
 
+            EndChild();
         }
-        EndChild();
 
         EndTabItem();
     }
@@ -210,7 +220,7 @@ void menu::custom::hotkey(const char* label, hotkey_t* hotkey)
     const ImVec2 pos = window->DC.CursorPos;
 
     char context_name[64] = { };
-    sprintf(context_name, "HotKeyContext%s", label);
+    ImFormatString(context_name, sizeof(context_name), "HotKeyContext%s", label);
 
     char text[64] = { };
     const char* hotkeyText = (hotkey->key != 0 && g.ActiveId != id) ? key_names[hotkey->key] : (g.ActiveId == id) ? "WAIT KEY" : "NONE";
