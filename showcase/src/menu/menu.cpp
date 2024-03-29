@@ -44,6 +44,7 @@ void menu::render()
         {
             Checkbox("Predict spread", &settings::aimbot::accuracy::predict_spread);
             Checkbox("Disable recoil", &settings::aimbot::accuracy::disable_recoil);
+            Checkbox("Disable visual recoil", &settings::aimbot::accuracy::disable_visual_recoil);
             SliderFloat("Backtrack", &settings::aimbot::accuracy::backtrack, 0.f, 1.f, "%.3f ms", ImGuiSliderFlags_NoInput);
             SliderFloat("Smooth", &settings::aimbot::accuracy::smooth, 0.f, 20.f, "%.1f", ImGuiSliderFlags_NoInput);
         }
@@ -92,6 +93,7 @@ void menu::render()
 
         BeginChild("Visuals", child_size);
         {
+            Checkbox("Fake model", &settings::antiaim::visuals::fake_model);
 
             EndChild();
         }

@@ -51,6 +51,7 @@ namespace settings
         {
             inline bool predict_spread = false;
             inline bool disable_recoil = false;
+            inline bool disable_visual_recoil = false;
             inline float backtrack = 0;
             inline float smooth = 0.f;
         }
@@ -90,7 +91,7 @@ namespace settings
 
         namespace visuals
         {
-
+            inline bool fake_model = false;
         }
     }
 
