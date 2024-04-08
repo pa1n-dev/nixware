@@ -56,7 +56,8 @@ void menu::render()
         {
             Checkbox("Fov", &settings::aimbot::visuals::fov); ColorEdit4("Fov", settings::aimbot::visuals::colors::fov, color_edit4_flags);
             Checkbox("Snaplines", &settings::aimbot::visuals::snaplines); ColorEdit4("Snaplines", settings::aimbot::visuals::colors::snaplines, color_edit4_flags);
-            Checkbox("Backtrack", &settings::aimbot::visuals::backtrack);
+            Checkbox("Backtrack", &settings::aimbot::visuals::backtrack::enable); ColorEdit4("Backtrack", settings::aimbot::visuals::colors::backtrack, color_edit4_flags);
+            Combo("Material", &settings::aimbot::visuals::backtrack::material_type, "Normal\0" "Flat\0" "Wireframe\0");
         }
         EndChild();
 
@@ -72,11 +73,10 @@ void menu::render()
             Checkbox("Enable", &settings::antiaim::globals::enable); custom::hotkey("AntiAim Hotkey", &settings::antiaim::globals::hotkey);
             Checkbox("Fake duck", &settings::antiaim::globals::fake_duck);
             Checkbox("Invert yaw", &settings::antiaim::globals::invert_yaw);
-            Combo("Yaw", &settings::antiaim::globals::yaw, "LBY\0" "Spin\0");
+            Combo("Yaw", &settings::antiaim::globals::yaw, "LBY\0");
             Combo("Pitch", &settings::antiaim::globals::pitch, "Down\0" "Up\0");
-
-            EndChild();
         }
+        EndChild();
 
         SameLine();
 
@@ -85,18 +85,17 @@ void menu::render()
             Checkbox("Enable", &settings::antiaim::fakelags::enable);
             SliderInt("Count", &settings::antiaim::fakelags::count, 1, 24, "%d", ImGuiSliderFlags_NoInput); /*sv_maxusrcmdprocessticks = 24*/
             Combo("Method", &settings::antiaim::fakelags::method, "On Ground\0" "In Air\0" "On Move\0" "On Stand\0" "Always\0");
-
-            EndChild();
         }
+        EndChild();
 
         SameLine();
 
         BeginChild("Visuals", child_size);
         {
-            Checkbox("Fake model", &settings::antiaim::visuals::fake_model);
-
-            EndChild();
+            Checkbox("Fake model", &settings::antiaim::visuals::fake_model::enable); ColorEdit4("Fake model", settings::antiaim::visuals::colors::fake_model, color_edit4_flags);
+            Combo("Material", &settings::antiaim::visuals::fake_model::material_type, "Normal\0" "Flat\0" "Wireframe\0");
         }
+        EndChild();
 
         EndTabItem();
     }
@@ -109,7 +108,13 @@ void menu::render()
         {
             Checkbox("Enable", &settings::visuals::players::enable);
             Checkbox("Dormant", &settings::visuals::players::dormant);
-            Checkbox("Box", &settings::visuals::players::box); ColorEdit4("Box Color", settings::visuals::players::colors::box, color_edit4_flags);
+            Checkbox("Box", &settings::visuals::players::box); ColorEdit4("Box", settings::visuals::players::colors::box, color_edit4_flags);
+            Checkbox("Name", &settings::visuals::players::name); ColorEdit4("Name", settings::visuals::players::colors::name, color_edit4_flags);
+            Checkbox("Rp team", &settings::visuals::players::rp_team); ColorEdit4("Rp team", settings::visuals::players::colors::rp_team, color_edit4_flags);
+            Checkbox("User group", &settings::visuals::players::user_group); ColorEdit4("User group", settings::visuals::players::colors::user_group, color_edit4_flags);
+            Checkbox("Weapon name", &settings::visuals::players::weapon_name); ColorEdit4("Weapon name", settings::visuals::players::colors::weapon_name, color_edit4_flags);
+            Checkbox("Distance", &settings::visuals::players::distance); ColorEdit4("Distance", settings::visuals::players::colors::distance, color_edit4_flags);
+            SliderInt("Render distance", &settings::visuals::players::render_distance, 100, 20000, "%d m", ImGuiSliderFlags_NoInput);
         }
         EndChild();
 
@@ -118,7 +123,7 @@ void menu::render()
 
         BeginChild("Entity", child_size);
         {
-            Checkbox("Enable", &settings::visuals::entity::enable);
+            //Checkbox("Enable", &settings::visuals::entity::enable);
         }
         EndChild();
 
@@ -149,6 +154,8 @@ void menu::render()
 
         BeginChild("Movement", child_size);
         {
+            Checkbox("Bunny hop", &settings::miscellaneous::movement::bhop);
+            Checkbox("Air strafe", &settings::miscellaneous::movement::air_strafe);
 
             EndChild();
         }

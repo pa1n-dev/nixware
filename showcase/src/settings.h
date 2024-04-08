@@ -60,12 +60,18 @@ namespace settings
         {
             inline bool fov = false;
             inline bool snaplines = false;
-            inline bool backtrack = false;
+
+            namespace backtrack
+            {
+                inline bool enable = false;
+                inline int material_type = 0;
+            }
 
             namespace colors
             {
                 inline float fov[4] = { 1.f, 1.f, 1.f, 1.f };
                 inline float snaplines[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float backtrack[4] = { 1.f, 1.f, 1.f, 1.f };
             }
         }
     }
@@ -91,7 +97,16 @@ namespace settings
 
         namespace visuals
         {
-            inline bool fake_model = false;
+            namespace fake_model
+            {
+                inline bool enable = false;
+                inline int material_type = 0;
+            }
+
+            namespace colors
+            {
+                inline float fake_model[4] = { 1.f, 1.f, 1.f, 1.f };
+            }
         }
     }
 
@@ -109,7 +124,8 @@ namespace settings
 
         namespace movement
         {
-
+            inline bool bhop = false;
+            inline bool air_strafe = false;
         }
     }
 
@@ -120,10 +136,21 @@ namespace settings
             inline bool enable = false;
             inline bool dormant = false;
             inline bool box = false;
+            inline bool name = false;
+            inline bool rp_team = false;
+            inline bool user_group = false;
+            inline bool weapon_name = false;
+            inline bool distance = false;
+            inline int render_distance = 15000;
 
             namespace colors
             {
                 inline float box[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float name[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float rp_team[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float user_group[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float weapon_name[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float distance[4] = { 1.f, 1.f, 1.f, 1.f };
             }
         }
 
