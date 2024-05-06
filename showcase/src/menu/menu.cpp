@@ -9,6 +9,8 @@ void menu::render()
     PushStyleColor(ImGuiCol_PopupBg, ImVec4(settings::menu::colors::window_bg[0], settings::menu::colors::window_bg[1], settings::menu::colors::window_bg[2], settings::menu::colors::window_bg[3]));
     PushStyleColor(ImGuiCol_ChildBg, ImVec4(settings::menu::colors::child_bg[0], settings::menu::colors::child_bg[1], settings::menu::colors::child_bg[2], settings::menu::colors::child_bg[3]));
     PushStyleColor(ImGuiCol_Text, ImVec4(settings::menu::colors::text[0], settings::menu::colors::text[1], settings::menu::colors::text[2], settings::menu::colors::text[3]));
+    PushStyleColor(ImGuiCol_TextHovered, ImVec4(settings::menu::colors::text_hovered[0], settings::menu::colors::text_hovered[1], settings::menu::colors::text_hovered[2], settings::menu::colors::text_hovered[3]));
+    PushStyleColor(ImGuiCol_TextActive, ImVec4(settings::menu::colors::text_active[0], settings::menu::colors::text_active[1], settings::menu::colors::text_active[2], settings::menu::colors::text_active[3]));
     PushStyleColor(ImGuiCol_FrameBg, ImVec4(settings::menu::colors::frame_bg[0], settings::menu::colors::frame_bg[1], settings::menu::colors::frame_bg[2], settings::menu::colors::frame_bg[3]));
     PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(settings::menu::colors::frame_hovered_bg[0], settings::menu::colors::frame_hovered_bg[1], settings::menu::colors::frame_hovered_bg[2], settings::menu::colors::frame_hovered_bg[3]));
     PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(settings::menu::colors::frame_active_bg[0], settings::menu::colors::frame_active_bg[1], settings::menu::colors::frame_active_bg[2], settings::menu::colors::frame_active_bg[3]));
@@ -32,6 +34,7 @@ void menu::render()
             Checkbox("Enable", &settings::aimbot::globals::enable); custom::hotkey("Aimbot Hotkey", &settings::aimbot::globals::hotkey);
             Checkbox("Silent", &settings::aimbot::globals::silent);
             Checkbox("Automatic fire", &settings::aimbot::globals::automatic_fire);
+            Checkbox("Penetrate walls", &settings::aimbot::globals::penetrate_walls);
             SliderFloat("Fov", &settings::aimbot::globals::fov, 0.f, 180.f, "%.1f", ImGuiSliderFlags_NoInput);
             Combo("Hitbox", &settings::aimbot::globals::hitbox, "Head\0" "Chest\0" "Stomach\0" "Hitscan\0");
             Combo("Priority", &settings::aimbot::globals::priority, "Fov\0" "Distance\0" "Health\0");
@@ -72,6 +75,7 @@ void menu::render()
         {
             Checkbox("Enable", &settings::antiaim::globals::enable); custom::hotkey("AntiAim Hotkey", &settings::antiaim::globals::hotkey);
             Checkbox("Fake duck", &settings::antiaim::globals::fake_duck);
+            Checkbox("At target", &settings::antiaim::globals::at_target);
             Checkbox("Invert yaw", &settings::antiaim::globals::invert_yaw);
             Combo("Yaw", &settings::antiaim::globals::yaw, "LBY\0");
             Combo("Pitch", &settings::antiaim::globals::pitch, "Down\0" "Up\0");
@@ -104,32 +108,64 @@ void menu::render()
     {
         ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
 
-        BeginChild("Players", child_size);
+        BeginChild("ESP", child_size);
         {
-            Checkbox("Enable", &settings::visuals::players::enable);
-            Checkbox("Dormant", &settings::visuals::players::dormant);
-            Checkbox("Box", &settings::visuals::players::box); ColorEdit4("Box", settings::visuals::players::colors::box, color_edit4_flags);
-            Checkbox("Name", &settings::visuals::players::name); ColorEdit4("Name", settings::visuals::players::colors::name, color_edit4_flags);
-            Checkbox("Rp team", &settings::visuals::players::rp_team); ColorEdit4("Rp team", settings::visuals::players::colors::rp_team, color_edit4_flags);
-            Checkbox("User group", &settings::visuals::players::user_group); ColorEdit4("User group", settings::visuals::players::colors::user_group, color_edit4_flags);
-            Checkbox("Weapon name", &settings::visuals::players::weapon_name); ColorEdit4("Weapon name", settings::visuals::players::colors::weapon_name, color_edit4_flags);
-            Checkbox("Distance", &settings::visuals::players::distance); ColorEdit4("Distance", settings::visuals::players::colors::distance, color_edit4_flags);
-            SliderInt("Render distance", &settings::visuals::players::render_distance, 100, 20000, "%d m", ImGuiSliderFlags_NoInput);
+            static int type = 0;
+            Combo("##ESP", &type, "Player\0" "Entity\0");
+
+            switch (type)
+            {
+            case 0:
+            {
+                Checkbox("Enable", &settings::visuals::players::enable);
+                Checkbox("Dormant", &settings::visuals::players::dormant);
+                Checkbox("Box", &settings::visuals::players::box); ColorEdit4("Box", settings::visuals::players::colors::box, color_edit4_flags);
+                Checkbox("Name", &settings::visuals::players::name); ColorEdit4("Name", settings::visuals::players::colors::name, color_edit4_flags);
+                Checkbox("Rp team", &settings::visuals::players::rp_team); ColorEdit4("Rp team", settings::visuals::players::colors::rp_team, color_edit4_flags);
+                Checkbox("User group", &settings::visuals::players::user_group); ColorEdit4("User group", settings::visuals::players::colors::user_group, color_edit4_flags);
+                Checkbox("Weapon name", &settings::visuals::players::weapon_name); ColorEdit4("Weapon name", settings::visuals::players::colors::weapon_name, color_edit4_flags);
+                Checkbox("Distance", &settings::visuals::players::distance); ColorEdit4("Distance", settings::visuals::players::colors::distance, color_edit4_flags);
+                SliderInt("Render distance", &settings::visuals::players::render_distance, 100, 20000, "%d m", ImGuiSliderFlags_NoInput);
+            }
+            break;
+            case 1:
+            {
+                Checkbox("Enable", &settings::visuals::entity::enable);
+                Checkbox("Dormant", &settings::visuals::entity::dormant);
+                Checkbox("Box", &settings::visuals::entity::box); ColorEdit4("Box", settings::visuals::entity::colors::box, color_edit4_flags);
+                Checkbox("Name", &settings::visuals::entity::name); ColorEdit4("Name", settings::visuals::entity::colors::name, color_edit4_flags);
+                Checkbox("Distance", &settings::visuals::entity::distance); ColorEdit4("Distance", settings::visuals::entity::colors::distance, color_edit4_flags);
+
+                if (BeginCombo("List", "..."))
+                {
+                    for (auto item : settings::visuals::entity::list.items())
+                    {
+                        bool temp = item.value();
+                        Selectable(item.key().c_str(), &temp, ImGuiSelectableFlags_DontClosePopups);
+                        item.value() = temp;
+                    }
+
+                    EndCombo();
+                }
+
+                SliderInt("Render distance", &settings::visuals::entity::render_distance, 100, 20000, "%d m", ImGuiSliderFlags_NoInput);
+            }
+            break;
+            }
         }
         EndChild();
 
-
         SameLine();
 
-        BeginChild("Entity", child_size);
+        BeginChild("Chams", child_size);
         {
-            //Checkbox("Enable", &settings::visuals::entity::enable);
+
         }
         EndChild();
 
         SameLine();
 
-        BeginChild("Misc", child_size);
+        BeginChild("World", child_size);
         {
 
         }
@@ -146,9 +182,8 @@ void menu::render()
         {
             Checkbox("ThirdPerson", &settings::miscellaneous::globals::third_person::enable); custom::hotkey("Third person Hotkey", &settings::miscellaneous::globals::third_person::hotkey);
             SliderInt("ThirdPerson Distance", &settings::miscellaneous::globals::third_person::distance, 10, 200);
-
-            EndChild();
         }
+        EndChild();
 
         SameLine();
 
@@ -156,15 +191,68 @@ void menu::render()
         {
             Checkbox("Bunny hop", &settings::miscellaneous::movement::bhop);
             Checkbox("Air strafe", &settings::miscellaneous::movement::air_strafe);
-
-            EndChild();
         }
+        EndChild();
 
         EndTabItem();
     }
 
     if (BeginTabItem("Lua"))
     {
+        ImVec2 child_size = ImVec2((GetColumnWidth() - (style.ItemSpacing.x * 2)) / 3, GetWindowHeight() - (GetCursorPosY() + style.ItemInnerSpacing.y * 2));
+
+        static int selected_item = -1;
+        static char search_buffer[256] = "";
+
+        std::vector<std::string> file_list = { "autodance", "exechack :)", "hitlog", "test", "rehack" };
+
+        BeginChild("Scripts", child_size);
+        {
+            float column_width = GetColumnWidth();
+
+            PushItemWidth(column_width - 10.f);
+            InputText("Search", search_buffer, sizeof(search_buffer));
+
+            if (BeginListBox("##Files", ImVec2(0, GetWindowHeight() - (GetCursorPosY() + 10.f))))
+            {
+                for (int i = 0; i < file_list.size(); i++)
+                {
+                    if (Selectable(file_list[i].c_str(), selected_item == i, 0, ImVec2(column_width, 0)))
+                        selected_item = i;
+                }
+
+                EndListBox();
+            }
+
+            PopItemWidth();
+        }
+        EndChild();
+
+        SameLine();
+
+        BeginChild("Action", child_size);
+        {
+            float column_width = GetColumnWidth();
+
+            if (selected_item != -1 && selected_item < file_list.size())
+            {
+                std::string path = "C:/nixware/lua/" + file_list[selected_item] + ".lua";
+
+                LabelText(file_list[selected_item].c_str());
+                LabelText("Last update:", "18 Apr 2024 23:52");
+
+                Button("Load script", ImVec2(column_width - 10.f, 35.f));
+            }
+        }
+        EndChild();
+
+        SameLine();
+
+        BeginChild("Misc", child_size);
+        {
+            Checkbox("Dumper", &settings::lua::miscellaneous::dumper);
+        }
+        EndChild();
 
         EndTabItem();
     }
@@ -186,6 +274,8 @@ void menu::render()
             LabelText("WindowBg");       ColorEdit4("WindowBg", settings::menu::colors::window_bg, color_edit4_flags);
             LabelText("ChildBg");        ColorEdit4("ChildBg", settings::menu::colors::child_bg, color_edit4_flags);
             LabelText("Text");           ColorEdit4("Text", settings::menu::colors::text, color_edit4_flags);
+            LabelText("TextHovered");    ColorEdit4("TextHovered", settings::menu::colors::text_hovered, color_edit4_flags);
+            LabelText("TextActive");     ColorEdit4("TextActive", settings::menu::colors::text_active, color_edit4_flags);
             LabelText("FrameBg");        ColorEdit4("FrameBg", settings::menu::colors::frame_bg, color_edit4_flags);
             LabelText("FrameHoveredBg"); ColorEdit4("FrameHoveredBg", settings::menu::colors::frame_hovered_bg, color_edit4_flags);
             LabelText("FrameActiveBg");  ColorEdit4("FrameActiveBg", settings::menu::colors::frame_active_bg, color_edit4_flags);
@@ -197,9 +287,9 @@ void menu::render()
 
         BeginChild("Configs", child_size);
         {
-            float column_width = GetColumnWidth() - 10.f;
+            float column_width = GetColumnWidth();
 
-            Button("Unload cheat", ImVec2(column_width, 35.f));
+            Button("Unload cheat", ImVec2(column_width - 10.f, 35.f));
         }
         EndChild();
 
@@ -209,7 +299,7 @@ void menu::render()
     EndTabBar();
     End();
 
-    PopStyleColor(7);
+    PopStyleColor(9);
     PopStyleVar();
 }
 

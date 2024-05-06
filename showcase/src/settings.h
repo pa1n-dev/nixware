@@ -1,4 +1,5 @@
 #pragma once
+#include "../json/json.hpp"
 
 struct hotkey_t
 {
@@ -27,7 +28,9 @@ namespace settings
         {
             inline float window_bg[4] = { 0.07f, 0.07f, 0.07f, 1.f };
             inline float child_bg[4] = { 0.1f, 0.1f, 0.1f, 1.f };
-            inline float text[4] = { 1.f, 1.f, 1.f, 1.f };
+            inline float text[4] = { 0.4f, 0.4f, 0.4f, 1.f };
+            inline float text_hovered[4] = { 0.8f, 0.8f, 0.8f, 1.f };
+            inline float text_active[4] = { 1.f, 1.f, 1.f, 1.f };
             inline float frame_bg[4] = { 0.2f, 0.2f, 0.2f, 1.f };
             inline float frame_hovered_bg[4] = { 0.4f, 0.4f, 0.4f, 1.f };
             inline float frame_active_bg[4] = { 1.f, 1.f, 1.f, 1.f };
@@ -42,6 +45,7 @@ namespace settings
             inline hotkey_t hotkey;
             inline bool silent = false;
             inline bool automatic_fire = false;
+            inline bool penetrate_walls = false;
             inline float fov = 0;
             inline int hitbox = 0;
             inline int priority = 0;
@@ -84,6 +88,7 @@ namespace settings
             inline hotkey_t hotkey;
             inline int yaw = 0;
             inline int pitch = 0;
+            inline bool at_target = false;
             inline bool invert_yaw = false;
             inline bool fake_duck = false;
         }
@@ -107,25 +112,6 @@ namespace settings
             {
                 inline float fake_model[4] = { 1.f, 1.f, 1.f, 1.f };
             }
-        }
-    }
-
-    namespace miscellaneous
-    {
-        namespace globals
-        {
-            namespace third_person
-            {
-                inline bool enable = false;
-                inline hotkey_t hotkey;
-                inline int distance = 100;
-            }
-        }
-
-        namespace movement
-        {
-            inline bool bhop = false;
-            inline bool air_strafe = false;
         }
     }
 
@@ -156,7 +142,50 @@ namespace settings
 
         namespace entity
         {
+            inline nlohmann::json list;
+
             inline bool enable = false;
+            inline bool dormant = false;
+            inline bool box = false;
+            inline bool name = false;
+            inline bool distance = false;
+
+            inline int render_distance = 15000;
+
+            namespace colors
+            {
+                inline float box[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float name[4] = { 1.f, 1.f, 1.f, 1.f };
+                inline float distance[4] = { 1.f, 1.f, 1.f, 1.f };
+            }
         }
+    }
+
+    namespace miscellaneous
+    {
+        namespace globals
+        {
+            namespace third_person
+            {
+                inline bool enable = false;
+                inline hotkey_t hotkey;
+                inline int distance = 100;
+            }
+        }
+
+        namespace movement
+        {
+            inline bool bhop = false;
+            inline bool air_strafe = false;
+        }
+    }
+
+    namespace lua
+    {
+        namespace miscellaneous
+        {
+            inline bool dumper = false;
+        }
+
     }
 }
